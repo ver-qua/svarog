@@ -1,0 +1,4 @@
+.xdp-*
+/.vscode
+*.log
+/build
