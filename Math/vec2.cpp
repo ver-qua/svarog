@@ -3,12 +3,13 @@
 
 #include<math.h>
 
-namespace svarog
+namespace svg
 {
     template <typename T>
     struct vec2
     {      
-        
+        static constexpr double DEG_TO_RAD = M_PI / 180;
+
         T x, y;
         
         // Конструкторы
@@ -62,38 +63,31 @@ namespace svarog
         // Длинна
         T lenght();
 
+        vec2<T> rotate(double degrees, const vec2<T>& center = vec2<T>());
+
         // Скалярное произведение
         static T dot_product(const vec2<T>& first, const vec2<T>& second);
 
         // Косинус угла между векторами
-        static T cos(vec2<T>& first, vec2<T>& second);
+        static T cos(const vec2<T>& first, const vec2<T>& second);
 
         // Cинус угла между векторами
-        static T sin(vec2<T>& first, vec2<T>& second);
+        static T sin(const vec2<T>& first, const vec2<T>& second);
 
         static T zero();
     };
 
     template <typename T>
-    vec2<T>::vec2()
-    {
-        this->x = 0;
-        this->y = 0;
-    }
+    vec2<T>::vec2() : x(0), y(0)
+    {}
 
     template <typename T>
-    vec2<T>::vec2(T x, T y)
-    {
-        this->x = x;
-        this->y = y;
-    }
+    vec2<T>::vec2(T x, T y) : x(x), y(y)
+    {}
 
     template <typename T>
-    vec2<T>::vec2(const vec2<T>& original)
-    {
-        this->x = original.x;
-        this->y = original.y;
-    }
+    vec2<T>::vec2(const vec2<T>& original) : x(original.x), y(original.y)
+    {}
 
     template <typename T>
     vec2<T> vec2<T>::operator+(const vec2<T>& other)
@@ -200,27 +194,43 @@ namespace svarog
     }
 
     template <typename T>
+    vec2<T> vec2<T>::rotate(double degrees, const vec2<T>& center)
+    {
+        degrees = degrees * DEG_TO_RAD;
+
+        vec2<T> rotated;
+        vec2<T> relative;
+
+        relative = *this - center;
+
+        rotated.x = relative.x * std::cos(degrees) - relative.y * std::sin(degrees);
+        rotated.y = relative.x * std::sin(degrees) + relative.y * std::cos(degrees);
+
+        *this = rotated + center;
+    }
+
+    template <typename T>
     T vec2<T>::lenght()
     {
         return sqrt(pow(this->x, 2) + pow(this->y, 2));
     }
 
     template <typename T>
-    T vec2<T>::dot_product(const vec2<T>& first, const vec2<T>& second)
+    T vec2<T>::dot_product(const vec2<T>& first, const vec2<T>& second) 
     {
         return(first.x * second.x + first.y * second.y);
     }
 
     template <typename T>
-    T vec2<T>::cos(vec2<T>& first, vec2<T>& second)
+    T vec2<T>::cos(const vec2<T>& first, const vec2<T>& second) 
     {   
         return(vec2<T>::dot_product(first, second) / (first.lenght() * second.lenght()));
     }
 
     template <typename T>
-    T vec2<T>::sin(vec2<T>& first, vec2<T>& second)
+    T vec2<T>::sin(const vec2<T>& first, const vec2<T>& second) 
     {
-        T cosinus = cos(first, second);
+        T cosinus = vec2<T>::cos(first, second);
         return(cosinus >= 0 ? sqrt(1 - pow(cosinus, 2)) : sqrt(1 - pow(cosinus, 2)) * -1);
     }
 

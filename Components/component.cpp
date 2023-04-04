@@ -9,7 +9,6 @@
 
 // Объявление класса
 #define CLASS_DECLARATION(class)                                \
-public:                                                         \
                                                                 \
     /* Хеш идентификатор типа компонента */                     \
     const static std::size_t type;                              \
@@ -31,13 +30,12 @@ public:                                                         \
         return parent_class::IsClassType(type);                                                 \
     }                                                                                           \
 
-namespace svarog
+namespace svg
 {
     // Базовый класс компанента
     class Component
     {
     public:
-        
         // Хеш идентификатор типа компонента
         const static std::size_t type;
 
@@ -46,7 +44,7 @@ namespace svarog
         
         Component();
 
-        Component(std::string&& name);
+        Component(const std::string& name);
 
         // Функция проверки идентификатора
         virtual bool IsClassType(const std::size_t type) const;
@@ -56,13 +54,13 @@ namespace svarog
 
     bool Component::IsClassType(const std::size_t type) const
     {
-        return type == type;
+        return this->type == type;
     }
 
     Component::Component() : name("Unnamed сomponent")
     {}
 
-    Component::Component(std::string&& name) : name(name)
+    Component::Component(const std::string& name) : name(name)
     {}
 }
 

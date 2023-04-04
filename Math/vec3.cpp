@@ -3,7 +3,7 @@
 
 #include<math.h>
 
-namespace svarog
+namespace svg
 {
     template <typename T>
     struct vec3
@@ -67,37 +67,25 @@ namespace svarog
         static T dot_product(const vec3<T>& first, const vec3<T>& second);
 
         // Косинус угла между векторами
-        static T cos(vec3<T>& first, vec3<T>& second);
+        static T cos(const vec3<T>& first, const vec3<T>& second);
 
         // Cинус угла между векторами
-        static T sin(vec3<T>& first, vec3<T>& second);
+        static T sin(const vec3<T>& first, const vec3<T>& second);
 
         static T zero();
     };
 
     template <typename T>
-    vec3<T>::vec3()
-    {
-        this->x = 0;
-        this->y = 0;
-        this->z = 0;
-    }
+    vec3<T>::vec3() : x(0), y(0), z(0)
+    {}
 
     template <typename T>
-    vec3<T>::vec3(T x, T y, T z)
-    {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-    }
+    vec3<T>::vec3(T x, T y, T z) : x(x), y(y), z(z)
+    {}
 
     template <typename T>
-    vec3<T>::vec3(const vec3<T>& original)
-    {
-        this->x = original.x;
-        this->y = original.y;
-        this->z = original.z;
-    }
+    vec3<T>::vec3(const vec3<T>& original) : x(original.x), y(original.y), z(original.z)
+    {}
 
     template <typename T>
     vec3<T> vec3<T>::operator+(const vec3<T>& other)
@@ -223,13 +211,13 @@ namespace svarog
     }
 
     template <typename T>
-    T vec3<T>::cos(vec3<T>& first, vec3<T>& second)
+    T vec3<T>::cos(const vec3<T>& first, const vec3<T>& second)
     {   
         return(vec3<T>::dot_product(first, second) / (first.lenght() * second.lenght()));
     }
 
     template <typename T>
-    T vec3<T>::sin(vec3<T>& first, vec3<T>& second)
+    T vec3<T>::sin(const vec3<T>& first, const vec3<T>& second)
     {
         T cosinus = cos(first, second);
         return(cosinus >= 0 ? sqrt(1 - pow(cosinus, 2)) : sqrt(1 - pow(cosinus, 2)) * -1);

@@ -1,9 +1,9 @@
 #ifndef _PHYSIC_MATERIAL_H_
 #define _PHYSIC_MATERIAL_H_
 
-#include "vec2.hpp"
+#include"vec2.cpp"
 
-namespace svarog
+namespace svg
 {
     class PhysicMaterial
     {
@@ -16,7 +16,7 @@ namespace svarog
         double inversed_mass;
 
         // Центр масс
-        svarog::vec2<double> center_of_mass;
+        svg::vec2<double> center_of_mass;
 
         // Прыгучесть?
         double bounciness;
