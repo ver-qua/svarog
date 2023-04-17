@@ -8,7 +8,9 @@
 #include<vector>
 
 #include "Components/circle_collider.cpp"
+#include "Components/circle_render.cpp"
 #include "Components/convex_collider.cpp"
+#include "Components/convex_render.cpp"
 #include "Components/render.cpp"
 #include "Math/transform.cpp"
 #include "Solvers/physics_solver.cpp"
@@ -132,7 +134,10 @@ int main()
 				test.GetEntity(test.EntitiesCount() - 1)->transform.position.x = mouseX;
 				test.GetEntity(test.EntitiesCount() - 1)->transform.position.y = mouseY;
 				test.GetEntity(test.EntitiesCount() - 1)->transform.rotation = angle;
-				test.GetEntity(test.EntitiesCount() - 1)->AddComponent<svg::CircleRender>();
+				if((int)angle % 20 == 0)
+					test.GetEntity(test.EntitiesCount() - 1)->AddComponent<svg::ConvexRender>();
+				else
+				 	test.GetEntity(test.EntitiesCount() - 1)->AddComponent<svg::CircleRender>();
 				angle += 10;
 				break;
         }

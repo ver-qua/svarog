@@ -110,7 +110,7 @@ namespace svg
 
         std::array<vec2<double>, 2> AABB2 = collider2->GetAABB(full_transform);
 
-        // Выходим без пересечения, потому что найдена разделяющая ось
+        // Выходим без пересечения, потому что найдена разделяющая ось 0 - max 1 - min
         if(AABB1[0].x < AABB2[1].x or AABB1[1].x > AABB2[0].x)
             return false;
 
