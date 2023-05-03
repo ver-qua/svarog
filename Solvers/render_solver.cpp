@@ -29,9 +29,9 @@ namespace svg
     {
         void _RenderGimbal(Entity* entity);
 
-        void _RenderConvexRender(Entity* entity);
+        void _RenderConvexRenders(Entity* entity);
 
-        void _RenderCircleRender(Entity* entity);
+        void _RenderCircleRenders(Entity* entity);
 
         SDL_Renderer* _renderer;
 
@@ -41,7 +41,8 @@ namespace svg
         {
             None = 0,
             RenderGimbals = 1 << 0,
-            RenderColliders = 1 << 1
+            RenderNormals = 1 << 1,
+            RenderColliders = 1 << 2
         };
 
         int flags;
@@ -71,15 +72,18 @@ namespace svg
 
             Render *render = entity->GetComponent<Render>();
             
-            if(flags & Flags::RenderGimbals || render == NULL)
-                _RenderGimbal(entity);
-
             if(render == NULL)
+            {
+                _RenderGimbal(entity);
                 continue;
+            }
 
-            _RenderConvexRender(entity);
+            _RenderConvexRenders(entity);
 
-            _RenderCircleRender(entity);
+            _RenderCircleRenders(entity);
+
+            if(flags & Flags::RenderGimbals)
+                _RenderGimbal(entity);
         }
 
         SDL_RenderPresent(_renderer);
@@ -125,7 +129,7 @@ namespace svg
         filledCircleRGBA(_renderer, left.x, left.y, 2, 255, 0, 0, 255);
     }
 
-    void RenderSolver::_RenderConvexRender(Entity* entity)
+    void RenderSolver::_RenderConvexRenders(Entity* entity)
     {
         Transform entity_transform = entity->transform;
 
@@ -158,10 +162,22 @@ namespace svg
             }
 
             filledPolygonRGBA(_renderer, points_x, points_y, points_count, render->color.x, render->color.y, render->color.z, 255);
+            
+            if(!(flags & Flags::RenderNormals))
+                continue;
+            
+            for(unsigned long i = 0; i < points_count; i++)
+            {
+                unsigned long next = (i + 1) % points_count;
+                vec2<double> nomal_vector = vec2<double>(points_y[i] - points_y[next], points_x[next] - points_x[i]);
+                nomal_vector.normalize();
+                nomal_vector *= 10;
+                thickLineRGBA(_renderer, (points_x[i] + points_x[next]) / 2, (points_y[i] + points_y[next]) / 2, (points_x[i] + points_x[next]) / 2 + nomal_vector.x, (points_y[i] + points_y[next]) / 2 + nomal_vector.y, 2, 0, 0, 255, 255);
+            }
         }
     }
 
-    void RenderSolver::_RenderCircleRender(Entity* entity)
+    void RenderSolver::_RenderCircleRenders(Entity* entity)
     {
         Transform entity_transform = entity->transform;
 
@@ -179,6 +195,15 @@ namespace svg
             Transform render_transform = entity_transform + render->transform;
 
             filledCircleRGBA(_renderer, render_transform.position.x, render_transform.position.y, render->radius, render->color.x, render->color.y, render->color.x, 255);
+
+            if(!(flags & Flags::RenderNormals))
+                continue;
+
+            vec2<double> nomal_vector(1, 1);
+            nomal_vector *= 10;
+            nomal_vector.rotate(render_transform.rotation);
+
+            thickLineRGBA(_renderer, render_transform.position.x, render_transform.position.y, nomal_vector.x + render_transform.position.x, nomal_vector.y + render_transform.position.y, 2, 0, 0, 255, 255);
         }
     }
 }

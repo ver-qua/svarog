@@ -101,7 +101,7 @@ int main()
 
 	test.GetEntity(0)->GetComponent<svg::CircleRender>()->transform.position = {-100, 0};
 
-    test.AddSolver<svg::RenderSolver>("Viewer", 10, renderer, svg::RenderSolver::Flags::None);
+    test.AddSolver<svg::RenderSolver>("Viewer", 10, renderer, svg::RenderSolver::RenderGimbals | svg::RenderSolver::RenderNormals);
 	test.AddSolver<svg::PhysicsSolver>("Physer", 1000);
 
 	int mouseX = 0;
@@ -141,6 +141,19 @@ int main()
 				angle += 10;
 				break;
         }
+
+		for(unsigned long i = 1; i < test.EntitiesCount(); i++)
+		{
+			test.GetEntity(i)->transform.position.y += 0.001;
+			test.GetEntity(i)->transform.rotation += 0.001;
+			if(test.GetEntity(i)->transform.position.y > 400)
+			{
+				test.KillEntity(i);
+				break;
+			}	
+			
+		}
+		
 	}
 
     close(window, screen_surface, renderer);
