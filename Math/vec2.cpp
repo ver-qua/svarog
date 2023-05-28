@@ -266,7 +266,7 @@ namespace svg
     {
         double len = this->lenght();
 
-        return new vec2<T>(this->x / len, this->y / len);
+        return vec2<T>(this->x / len, this->y / len);
     }
 
 
