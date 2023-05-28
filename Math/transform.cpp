@@ -50,7 +50,7 @@ namespace svg
 
     Transform& Transform::operator+=(const Transform& other)
     {
-        this->position += (this->position + other.position);
+        this->position += other.position;
         this->position.rotate(this->rotation, this->position);
         this->rotation += other.rotation;
         return *this;
@@ -58,7 +58,7 @@ namespace svg
 
     Transform& Transform::operator-=(const Transform& other)
     {
-        this->position += (this->position - other.position);
+        this->position += other.position;
         this->position.rotate(this->rotation * -1, this->position);
         this->rotation -= other.rotation;
         return *this;

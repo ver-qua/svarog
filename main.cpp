@@ -1,21 +1,11 @@
-#include<SDL2/SDL.h>
-#include<SDL2/SDL2_gfxPrimitives.h>
-
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_mouse.h>
-#include<thread>
-#include<iostream>
-#include<vector>
-
-#include "Components/circle_collider.cpp"
-#include "Components/circle_render.cpp"
-#include "Components/convex_collider.cpp"
-#include "Components/convex_render.cpp"
-#include "Components/render.cpp"
+#include "Components/rigitbody.cpp"
+#include "Debug/logit.cpp"
 #include "Math/transform.cpp"
-#include "Solvers/physics_solver.cpp"
+#include "Math/vec2.cpp"
 #include "Solvers/render_solver.cpp"
 #include"include.hpp"
+#include <algorithm>
+#include <vector>
 
 // Инициализирует SDL2
 bool init(SDL_Window*& window, SDL_Renderer*& renderer, int screen_width, int screen_height)
@@ -88,21 +78,17 @@ int main()
 
 	test.GetEntity(0)->transform.position.x = 100;
 	test.GetEntity(0)->transform.position.y = 100;
-	test.GetEntity(0)->transform.rotation = 30;
 
-	test.GetEntity(0)->AddComponent<svg::ConvexRender>();
-	test.GetEntity(0)->AddComponent<svg::CircleRender>();
-	test.GetEntity(0)->AddComponent<svg::ConvexCollider>();
-	test.GetEntity(0)->AddComponent<svg::CircleCollider>();
+	std::vector<svg::vec2<double>> shape;
+	shape.push_back({-10, 0});
+	shape.push_back({10, 0});
+	shape.push_back({20, -30});
+	shape.push_back({-20, -30});
 
-	test.GetEntity(0)->GetComponent<svg::ConvexRender>()->transform.rotation = 180;
-	test.GetEntity(0)->GetComponent<svg::ConvexRender>()->transform.position = {100, 0};
-	test.GetEntity(0)->GetComponent<svg::ConvexRender>()->color = {0, 0, 0};
+	test.GetEntity(0)->AddComponent<svg::ConvexRender>(shape, svg::vec3<unsigned char>(0, 0, 0), svg::Transform({0, 0}, -120));
 
-	test.GetEntity(0)->GetComponent<svg::CircleRender>()->transform.position = {-100, 0};
-
-    test.AddSolver<svg::RenderSolver>("Viewer", 10, renderer, svg::RenderSolver::RenderGimbals | svg::RenderSolver::RenderNormals);
-	test.AddSolver<svg::PhysicsSolver>("Physer", 1000);
+    test.AddSolver<svg::RenderSolver>("Viewer", 10, renderer);
+	test.AddSolver<svg::PhysicsSolver>("Physer", 0.01, 1);
 
 	int mouseX = 0;
 	int mouseY = 0;
@@ -110,8 +96,6 @@ int main()
     SDL_Event event;
 
 	bool quit = false;
-
-	double angle = 0;
 
 	while(!quit)
 	{
@@ -127,31 +111,29 @@ int main()
 				mouseY = event.motion.y;
 				test.GetEntity(0)->transform.position.x = mouseX;
 				test.GetEntity(0)->transform.position.y = mouseY;
-				test.GetEntity(0)->transform.rotation += 1;
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				test.CreateEntity("Unnamed");
 				test.GetEntity(test.EntitiesCount() - 1)->transform.position.x = mouseX;
 				test.GetEntity(test.EntitiesCount() - 1)->transform.position.y = mouseY;
-				test.GetEntity(test.EntitiesCount() - 1)->transform.rotation = angle;
-				if((int)angle % 20 == 0)
-					test.GetEntity(test.EntitiesCount() - 1)->AddComponent<svg::ConvexRender>();
-				else
-				 	test.GetEntity(test.EntitiesCount() - 1)->AddComponent<svg::CircleRender>();
-				angle += 10;
+				test.GetEntity(test.EntitiesCount() - 1)->AddComponent<svg::CircleRender>();
+
+				test.GetEntity(test.EntitiesCount() - 1)->AddComponent<svg::Rigitbody>();
+				test.GetEntity(test.EntitiesCount() - 1)->GetComponent<svg::Rigitbody>()->velocity = {40, -25.0};
+				test.GetEntity(test.EntitiesCount() - 1)->GetComponent<svg::Rigitbody>()->forse = {0, 10.0};
 				break;
         }
 
 		for(unsigned long i = 1; i < test.EntitiesCount(); i++)
 		{
-			test.GetEntity(i)->transform.position.y += 0.001;
-			test.GetEntity(i)->transform.rotation += 0.001;
-			if(test.GetEntity(i)->transform.position.y > 400)
+			svg::Rigitbody* rb = test.GetEntity(i)->GetComponent<svg::Rigitbody>();
+
+			if(rb != NULL && rb->transform.position.y > 400)
 			{
+				svg::logit("Delleted");
 				test.KillEntity(i);
 				break;
 			}	
-			
 		}
 		
 	}

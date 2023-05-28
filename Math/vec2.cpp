@@ -71,6 +71,10 @@ namespace svg
 
         vec2<T> rotate(double degrees, const vec2<T>& center = vec2<T>());
 
+        vec2<T> normalized();
+
+        vec2<T> rotated(double degrees, const vec2<T>& center = vec2<T>());
+
         // Скалярное произведение
         static double dot_product(const vec2<T>& first, const vec2<T>& second);
 
@@ -240,6 +244,31 @@ namespace svg
 
         return *this;
     }
+
+    template <typename T>
+    vec2<T> vec2<T>::rotated(double degrees, const vec2<T>& center)
+    {
+        degrees = degrees * DEG_TO_RAD;
+
+        vec2<T> rotated;
+        vec2<T> relative;
+
+        relative = *this - center;
+
+        rotated.x = relative.x * std::cos(degrees) - relative.y * std::sin(degrees);
+        rotated.y = relative.x * std::sin(degrees) + relative.y * std::cos(degrees);
+
+        return rotated + center;
+    }
+
+    template <typename T>
+    vec2<T> vec2<T>::normalized()
+    {
+        double len = this->lenght();
+
+        return new vec2<T>(this->x / len, this->y / len);
+    }
+
 
     template <typename T>
     double vec2<T>::lenght()

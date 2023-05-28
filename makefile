@@ -5,8 +5,8 @@ OBJS = main.cpp
 CC = g++
 
 # COMPILER_FLAGS обозначает, какие фополнительные флаги нужно использовать
-# -w показать все предупреждения
-COMPILER_FLAGS = -w -pthread
+# -W показать все предупреждения
+COMPILER_FLAGS = -W -pthread
 
 # LINKER_FLAGS обозначает подключаемые библиотеки
 LINKER_FLAGS = -lSDL2 -lSDL2_gfx

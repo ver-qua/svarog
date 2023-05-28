@@ -8,6 +8,7 @@
 #include<SDL2/SDL_video.h>
 
 #include<chrono>
+#include <math.h>
 #include<string>
 #include<vector>
 
@@ -154,8 +155,7 @@ namespace svg
             // Вращение точек и запись из в массив
             for(unsigned long i = 0; i < points_count; i++)
             {
-                vec2<double> rotated_point = render_transform.position + render->shape[i];
-                rotated_point.rotate(render_transform.rotation, render_transform.position);
+                vec2<double> rotated_point = (render_transform.position + render->shape[i]).rotated(render_transform.rotation, render_transform.position);
 
                 points_x[i] = rotated_point.x;
                 points_y[i] = rotated_point.y;

@@ -26,9 +26,7 @@ namespace svg
 
         ConvexRender();
 
-        ConvexRender(const std::vector<vec2<double>> _shape, const vec3<unsigned char>& color, const Transform& transform);
-
-        bool ChangeShape(const std::vector<vec2<double>>& shape);
+        ConvexRender(const std::vector<vec2<double>>& shape, const vec3<unsigned char>& color, const Transform& transform);
     };
 
     CLASS_DEFENITION(Render, ConvexRender)
@@ -36,7 +34,7 @@ namespace svg
     ConvexRender::ConvexRender() : shape({{0, 0}, {20, 20}, {20, -20}}), color({31, 206, 203}), transform()
     {}
 
-    ConvexRender::ConvexRender(const std::vector<vec2<double>> shape, const vec3<unsigned char>& color, const Transform& transform) : shape(shape), color(color), transform(transform)
+    ConvexRender::ConvexRender(const std::vector<vec2<double>>& shape, const vec3<unsigned char>& color, const Transform& transform) : shape(shape), color(color), transform(transform)
     {}
 }
 
