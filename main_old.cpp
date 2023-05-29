@@ -1,3 +1,4 @@
+#include "Components/circle_collider.cpp"
 #include "Components/rigitbody.cpp"
 #include "Debug/logit.cpp"
 #include "Math/transform.cpp"
@@ -86,6 +87,22 @@ int main()
 	shape.push_back({-20, -30});
 
 	test.GetEntity(0)->AddComponent<svg::ConvexRender>(shape, svg::vec3<unsigned char>(0, 0, 0), svg::Transform({0, 0}, -120));
+
+	test.CreateEntity("Secondborn");
+
+	shape.clear();
+
+	shape.push_back({-400, 0});
+	shape.push_back({400, 0});
+	shape.push_back({400, -30});
+	shape.push_back({-400, -30});
+
+	test.GetEntity(1)->AddComponent<svg::ConvexRender>(shape, svg::vec3<unsigned char>(0, 100, 0), svg::Transform({0, 0}, 0));
+	test.GetEntity(1)->transform = svg::Transform({320, 480}, 0);
+
+	test.CreateEntity("Thirdborn");
+	test.GetEntity(2)->AddComponent<svg::CircleRender>(20, svg::vec3<unsigned char>(255, 255, 000), svg::Transform({0, 0}, 0));
+	test.GetEntity(2)->transform = svg::Transform({550, 100}, 0);
 
     test.AddSolver<svg::RenderSolver>("Viewer", 10, renderer);
 	test.AddSolver<svg::PhysicsSolver>("Physer", 0.01, 1);

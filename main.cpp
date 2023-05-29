@@ -1,9 +1,12 @@
+#include "Components/circle_render.cpp"
 #include "Components/rigitbody.cpp"
+#include "Core/entity.cpp"
 #include "Debug/logit.cpp"
 #include "Math/transform.cpp"
 #include "Math/vec2.cpp"
 #include "Solvers/render_solver.cpp"
 #include"include.hpp"
+#include <SDL2/SDL_events.h>
 #include <algorithm>
 #include <vector>
 
@@ -75,17 +78,17 @@ int main()
 
     svg::Scene test("Test");
     test.CreateEntity("Firstborn");
+	
+	test.CreateEntity("Secondborn");
 
-	test.GetEntity(0)->transform.position.x = 100;
-	test.GetEntity(0)->transform.position.y = 100;
-
-	std::vector<svg::vec2<double>> shape;
-	shape.push_back({-10, 0});
-	shape.push_back({10, 0});
-	shape.push_back({20, -30});
-	shape.push_back({-20, -30});
-
-	test.GetEntity(0)->AddComponent<svg::ConvexRender>(shape, svg::vec3<unsigned char>(0, 0, 0), svg::Transform({0, 0}, -120));
+	for(unsigned long i = 0; i < 640; i += 25)
+	{
+		for(unsigned long j = 0; j <= 480; j += 25)
+		{
+			test.CreateEntity("Dot");
+			test.GetEntity(1)->AddComponent<svg::CircleRender>(2, svg::vec3<unsigned char>(100, 100, 100), svg::Transform(svg::vec2<double>(i, j), 0));
+		}
+	}
 
     test.AddSolver<svg::RenderSolver>("Viewer", 10, renderer);
 	test.AddSolver<svg::PhysicsSolver>("Physer", 0.01, 1);
@@ -96,6 +99,8 @@ int main()
     SDL_Event event;
 
 	bool quit = false;
+
+	bool mouse_down = false;
 
 	while(!quit)
 	{
@@ -112,30 +117,47 @@ int main()
 				test.GetEntity(0)->transform.position.x = mouseX;
 				test.GetEntity(0)->transform.position.y = mouseY;
 				break;
+
 			case SDL_MOUSEBUTTONDOWN:
 				test.CreateEntity("Unnamed");
 				test.GetEntity(test.EntitiesCount() - 1)->transform.position.x = mouseX;
 				test.GetEntity(test.EntitiesCount() - 1)->transform.position.y = mouseY;
 				test.GetEntity(test.EntitiesCount() - 1)->AddComponent<svg::CircleRender>();
-
 				test.GetEntity(test.EntitiesCount() - 1)->AddComponent<svg::Rigitbody>();
-				test.GetEntity(test.EntitiesCount() - 1)->GetComponent<svg::Rigitbody>()->velocity = {40, -25.0};
-				test.GetEntity(test.EntitiesCount() - 1)->GetComponent<svg::Rigitbody>()->forse = {0, 10.0};
+				mouse_down = true;
+				break;
+
+			case SDL_MOUSEBUTTONUP:
+				mouse_down = false;
 				break;
         }
 
-		for(unsigned long i = 1; i < test.EntitiesCount(); i++)
+		if(mouse_down)
 		{
-			svg::Rigitbody* rb = test.GetEntity(i)->GetComponent<svg::Rigitbody>();
-
-			if(rb != NULL && rb->transform.position.y > 400)
+			for(unsigned long i = 1; i < test.EntitiesCount(); i++)
 			{
-				svg::logit("Delleted");
-				test.KillEntity(i);
-				break;
-			}	
+				svg::Entity* ent = test.GetEntity(i);
+				svg::Rigitbody* rb = ent->GetComponent<svg::Rigitbody>();
+
+				if(rb != NULL)
+				{
+					rb->forse = (svg::vec2<double>(mouseX, mouseY) - (ent->transform.position + rb->transform.position)) / 10;
+				}
+			}
 		}
-		
+		else
+		{
+			for(unsigned long i = 1; i < test.EntitiesCount(); i++)
+			{
+				svg::Entity* ent = test.GetEntity(i);
+				svg::Rigitbody* rb = ent->GetComponent<svg::Rigitbody>();
+
+				if(rb != NULL)
+				{
+					rb->forse = svg::vec2<double>();
+				}
+			}
+		}
 	}
 
     close(window, screen_surface, renderer);

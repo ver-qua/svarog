@@ -1,3 +1,4 @@
+#include "Components/circle_render.cpp"
 #include "Components/rigitbody.cpp"
 #include "Core/entity.cpp"
 #include "Debug/logit.cpp"
@@ -77,6 +78,17 @@ int main()
 
     svg::Scene test("Test");
     test.CreateEntity("Firstborn");
+	
+	test.CreateEntity("Secondborn");
+
+	for(unsigned long i = 0; i < 640; i += 25)
+	{
+		for(unsigned long j = 0; j <= 480; j += 25)
+		{
+			test.CreateEntity("Dot");
+			test.GetEntity(1)->AddComponent<svg::CircleRender>(2, svg::vec3<unsigned char>(100, 100, 100), svg::Transform(svg::vec2<double>(i, j), 0));
+		}
+	}
 
     test.AddSolver<svg::RenderSolver>("Viewer", 10, renderer);
 	test.AddSolver<svg::PhysicsSolver>("Physer", 0.01, 1);

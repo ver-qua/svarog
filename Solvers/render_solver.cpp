@@ -194,7 +194,7 @@ namespace svg
             // Получаем полную трансформацию рндера
             Transform render_transform = entity_transform + render->transform;
 
-            filledCircleRGBA(_renderer, render_transform.position.x, render_transform.position.y, render->radius, render->color.x, render->color.y, render->color.x, 255);
+            filledCircleRGBA(_renderer, render_transform.position.x, render_transform.position.y, render->radius, render->color.x, render->color.y, render->color.z, 255);
 
             if(!(flags & Flags::RenderNormals))
                 continue;

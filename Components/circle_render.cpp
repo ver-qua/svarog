@@ -26,7 +26,7 @@ namespace svg
 
         CircleRender();
 
-        CircleRender(vec3<unsigned char> color, Transform transform);
+        CircleRender(double radius, vec3<unsigned char> color, Transform transform);
     };
 
     CLASS_DEFENITION(Render, CircleRender)
@@ -34,7 +34,7 @@ namespace svg
     CircleRender::CircleRender() : radius(10), color({31, 206, 203}), transform()
     {}
 
-    CircleRender::CircleRender(svg::vec3<unsigned char> color, Transform transform) : color(color), transform(transform)
+    CircleRender::CircleRender(double radius, svg::vec3<unsigned char> color, Transform transform) : radius(radius), color(color), transform(transform)
     {}
 }
 
