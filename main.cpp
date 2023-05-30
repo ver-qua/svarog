@@ -25,7 +25,7 @@ bool init(SDL_Window*& window, SDL_Renderer*& renderer, int screen_width, int sc
 		return false;	
 	}
 
-	window = SDL_CreateWindow("Playing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("svarog", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_SHOWN);
  
  	if(window == NULL)
 	{
